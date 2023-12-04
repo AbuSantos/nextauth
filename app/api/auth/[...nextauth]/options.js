@@ -1,4 +1,4 @@
-import GitHubProvider from "next-auth/providers/github ";
+import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
 export const options = {
@@ -23,10 +23,12 @@ export const options = {
     GoogleProvider({
       profile(profile) {
         console.log("Profile Google:", profile);
+        let userRole = "Github User";
 
         return {
           ...profile,
           id: profile.sub,
+          role: userRole,
         };
       },
       clientId: process.env.GOOGLE_ID,
@@ -43,7 +45,9 @@ export const options = {
     },
     //so we can use it in the client side
     async session({ session, token }) {
-      if (session?.user) session.user.role = token.role;
+      if (token && token.role) {
+        session.user.role = token.role;
+      }
       return session;
     },
   },
