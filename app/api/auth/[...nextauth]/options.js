@@ -38,7 +38,13 @@ export const options = {
       //allow us to add the token to our role, so it can be used in the server side
       if (user) {
         token.role = user.role;
+        return token;
       }
+    },
+    //so we can use it in the client side
+    async session({ session, token }) {
+      if (session?.user) session.user.role = token.role;
+      return session;
     },
   },
 };
