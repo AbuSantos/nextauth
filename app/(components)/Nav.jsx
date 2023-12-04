@@ -11,14 +11,19 @@ const Nav = async () => {
           <div>My Site</div>
           <div className="flex gap-10">
             <Link href="/"> Home</Link>
-            <Link href="/createUser"> Create User</Link>
             <Link href="/clientmember">Client Member</Link>
             <Link href="/member"> Member</Link>
             <Link href="/public"> Public</Link>
+
             {
               //when we sign out, it sends us back home
               session ? (
-                <Link href="/api/auth/signout?callbackUrl=/">Logout</Link>
+                <>
+                  <Link href="/api/auth/signout?callbackUrl=/">Logout</Link>
+                  {session.user.role === 'admin' && (
+                    <Link href="/createUser">Create User</Link>
+                  )}
+                </>
               ) : (
                 <Link href="/api/auth/signin">Login </Link>
               )

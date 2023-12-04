@@ -8,6 +8,8 @@ const Member = async () => {
     //redirect to login and then back to the member page
     redirect('/api/auth/signin?callbackUrl=/member')
   }
+  console.log('email', session?.user.email)
+  console.log('role', session?.user.role)
   return (
     <div>
       <h1>Member Server Session</h1>

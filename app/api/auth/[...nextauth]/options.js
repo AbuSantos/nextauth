@@ -5,7 +5,7 @@ export const options = {
   providers: [
     GitHubProvider({
       profile(profile) {
-        console.log("Profile Github:", profile);
+        // console.log("Profile Github:", profile);
         let userRole = "Github User";
         if (profile?.email === "abusomwansantos@gmail.com") {
           userRole = "admin";
@@ -22,8 +22,8 @@ export const options = {
     }),
     GoogleProvider({
       profile(profile) {
-        console.log("Profile Google:", profile);
-        let userRole = "Github User";
+        // console.log("Profile Google:", profile);
+        let userRole = "google User";
 
         return {
           ...profile,
@@ -38,16 +38,12 @@ export const options = {
   callbacks: {
     async jwt({ token, user }) {
       //allow us to add the token to our role, so it can be used in the server side
-      if (user) {
-        token.role = user.role;
-        return token;
-      }
+      if (user) token.role = user.role;
+      return token;
     },
     //so we can use it in the client side
     async session({ session, token }) {
-      if (token && token.role) {
-        session.user.role = token.role;
-      }
+      if (session?.user) session.user.role = token.role;
       return session;
     },
   },
