@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 import { options } from '../api/auth/[...nextauth]/options'
-
+import { getProviders } from 'next-auth/react'
 const Nav = async () => {
   const session = await getServerSession(options)
+  const providers = await getProviders()
+  console.log(('This is', providers))
   return (
     <div>
       <header className="bg-gray-600 text-gray-100">
@@ -28,6 +30,14 @@ const Nav = async () => {
                 <Link href="/api/auth/signin">Login </Link>
               )
             }
+            {providers &&
+              Object.values(providers).map((provider) => (
+                <div key={provider.id}>
+                  <button className="text-gray-100">
+                    Login with {provider.name}
+                  </button>
+                </div>
+              ))}
           </div>
         </nav>
       </header>
