@@ -30,14 +30,6 @@ const Nav = async () => {
                 <Link href="/api/auth/signin">Login </Link>
               )
             }
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <div key={provider.id}>
-                  <button className="text-gray-100">
-                    Login with {provider.name}
-                  </button>
-                </div>
-              ))}
           </div>
         </nav>
       </header>
