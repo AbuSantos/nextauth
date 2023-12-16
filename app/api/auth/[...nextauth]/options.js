@@ -1,5 +1,8 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import User from "@/(models)/User";
 
 export const options = {
   providers: [
@@ -33,6 +36,44 @@ export const options = {
       },
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+    }),
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "text",
+          placeholder: "your-email",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "your-password",
+        },
+      },
+      async authorize(credentials) {
+        try {
+          const foundUser = await User.findOne({ email: credentials.email })
+            .lean()
+            .execute();
+
+          if (foundUser) {
+            console.log("User found");
+            const match = await bcrypt.compare(
+              foundUser.password,
+              credentials.password
+            );
+            if (match) {
+              console.log("Passed");
+              delete foundUser.password;
+              foundUser["role"] = "Unverified User";
+              return foundUser;
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
   ],
   callbacks: {

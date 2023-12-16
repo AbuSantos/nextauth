@@ -5,7 +5,7 @@ import { getProviders } from 'next-auth/react'
 const Nav = async () => {
   const session = await getServerSession(options)
   const providers = await getProviders()
-  console.log(('This is', providers))
+  // console.log(('This is', providers))
   return (
     <div>
       <header className="bg-gray-600 text-gray-100">
