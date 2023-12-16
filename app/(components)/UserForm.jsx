@@ -9,6 +9,7 @@ const UserForm = () => {
   })
   const router = useRouter()
   const [errMessage, setErrMessage] = useState('')
+  const [showErr, setShowErr] = useState(false)
 
   const handleChange = (e) => {
     const { value, name } = e.target
@@ -38,11 +39,15 @@ const UserForm = () => {
         try {
           const response = await res.json()
           console.error('Error response:', response)
-          // Log the response object to the console
 
           // Check if the response has a 'message' property
           const errorMessage = response.message || 'An error occurred'
+
           setErrMessage(errorMessage)
+          setShowErr(true)
+          setTimeout(() => {
+            setShowErr(false)
+          }, 2000)
         } catch (error) {
           console.error('Error parsing JSON response:', error)
           setErrMessage('An unexpected error occurred')
@@ -66,6 +71,8 @@ const UserForm = () => {
       <form action="submit" onSubmit={handleSubmit} method="post">
         <h1>Create User</h1>
         <div className="flex flex-col w-6/12 p-2">
+          {showErr && <p>{errMessage}</p>}
+
           <div className="p-2">
             <input
               type="text"
@@ -101,7 +108,6 @@ const UserForm = () => {
           </div>
           <input type="submit" value="Create User" className="cursor-pointer" />
         </div>
-        <p>{errMessage}</p>
       </form>
     </div>
   )

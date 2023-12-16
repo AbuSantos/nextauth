@@ -1,6 +1,6 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import User from "@/(models)/User";
 
@@ -37,31 +37,32 @@ export const options = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
-    Credentials({
+    CredentialsProvider({
       name: "Credentials",
       credentials: {
         email: {
           label: "Email",
           type: "text",
-          placeholder: "your-email",
+          placeholder: "Your Email",
         },
         password: {
           label: "Password",
           type: "password",
-          placeholder: "your-password",
+          placeholder: "Your Password",
         },
       },
       async authorize(credentials) {
         try {
           const foundUser = await User.findOne({ email: credentials.email })
             .lean()
-            .execute();
+            .exec();
 
           if (foundUser) {
             console.log("User found");
+            // the compare function expects the plaintesxt password first
             const match = await bcrypt.compare(
-              foundUser.password,
-              credentials.password
+              credentials.password,
+              foundUser.password
             );
             if (match) {
               console.log("Passed");
